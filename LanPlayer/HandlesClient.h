@@ -1,5 +1,5 @@
 
-#include"Conf.h"//ÒıÓÃ¿âÅäÖÃ
+#include"Conf.h"//å¼•ç”¨åº“é…ç½®
 
 DWORD WINAPI client_broadcastthread(LPVOID);
 
@@ -7,30 +7,30 @@ DWORD WINAPI client_listerthread(LPVOID);
 
 DWORD WINAPI client_senderthread(LPVOID);
 
-//½âÎö¿ØÖÆÃüÁî
+//è§£ææ§åˆ¶å‘½ä»¤
 void jiexi(char Message[MSGSIZE]);
 
-DWORD WINAPI mp3receiver(LPVOID lpParamter);//·¢ËÍÎÄ¼şÏß³Ì
+DWORD WINAPI mp3receiver(LPVOID lpParamter);//å‘é€æ–‡ä»¶çº¿ç¨‹
 int lclient();
 
 /*******************************************************************************
-* º¯ÊıÃû        : DWORD WINAPI client_broadcastthread(LPVOID)
-* º¯ÊıÃèÊö    	: ¿Í»§¶ËÔÚ7001¿Ú½ÓÊÕ¹ã²¥,»ñµÃserverIPºó¿ªÆôclient_senderthreadÏß³Ì
-* ÊäÈë²ÎÊı      : ÎŞ
-* Êä³ö½á¹û     	: ·şÎñÆ÷µÄSOCKADDR_IN  c_serverbroadcastaddr
-* ·µ»ØÖµ        : ÎŞ                                                   TEST_OK
+* å‡½æ•°å        : DWORD WINAPI client_broadcastthread(LPVOID)
+* å‡½æ•°æè¿°    	: å®¢æˆ·ç«¯åœ¨7001å£æ¥æ”¶å¹¿æ’­,è·å¾—serverIPåå¼€å¯client_senderthreadçº¿ç¨‹
+* è¾“å…¥å‚æ•°      : æ— 
+* è¾“å‡ºç»“æœ     	: æœåŠ¡å™¨çš„SOCKADDR_IN  c_serverbroadcastaddr
+* è¿”å›å€¼        : æ—                                                    TEST_OK
 *******************************************************************************/
-SOCKADDR_IN Client_Broadcast_Geted_Serveraddr;//client´Ó¹ã²¥Àï»ñµÃµÄserveraddr
+SOCKADDR_IN Client_Broadcast_Geted_Serveraddr;//clientä»å¹¿æ’­é‡Œè·å¾—çš„serveraddr
 DWORD WINAPI client_broadcastthread(LPVOID)
 {  
-	//Ê×ÏÈ¼àÌıserviceµÄbroadcast
+	//é¦–å…ˆç›‘å¬serviceçš„broadcast
 	WSADATA     c_broadcastwsaData; 
 	SOCKET c_broadcastsocket;
 	SOCKADDR_IN c_localsockaddr;
 	char cRecvBuff[MSGSIZE];
 	int nSize,nbSize;
 
-	// ³õÊ¼»¯winsock¿â£¬Ê¹ÓÃsocketµÄÇ°Ìá
+	// åˆå§‹åŒ–winsockåº“ï¼Œä½¿ç”¨socketçš„å‰æ
 	if ( WSAStartup( MAKEWORD(2,2), &c_broadcastwsaData ) != NO_ERROR )
 		ErrorMessageprint("Error at WSAStartup()");
 
@@ -38,19 +38,19 @@ DWORD WINAPI client_broadcastthread(LPVOID)
 	c_broadcastsocket=socket(AF_INET, SOCK_DGRAM,0);
 
 	c_localsockaddr.sin_family = AF_INET;
-	c_localsockaddr.sin_port = htons(7001);//·¢ËÍ¶ËÊ¹ÓÃµÄ·¢ËÍ¶Ë¿Ú£¬¿ÉÒÔ¸ù¾İĞèÒª¸ü¸Ä
+	c_localsockaddr.sin_port = htons(7001);//å‘é€ç«¯ä½¿ç”¨çš„å‘é€ç«¯å£ï¼Œå¯ä»¥æ ¹æ®éœ€è¦æ›´æ”¹
 	c_localsockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	// °ó¶¨µ½7001¶Ë¿Ú£¬ÒÔ¼àÌıÀ´×ÔÍøÂçµÄÊı¾İ
+	// ç»‘å®šåˆ°7001ç«¯å£ï¼Œä»¥ç›‘å¬æ¥è‡ªç½‘ç»œçš„æ•°æ®
 	if(bind( c_broadcastsocket, (SOCKADDR FAR *)&c_localsockaddr, sizeof(SOCKADDR_IN))==SOCKET_ERROR)
 		ErrorMessageprint("Can't bind socket to local port!Program stop.\n");
 
-	//½ÓÊÜÏûÏ¢
+	//æ¥å—æ¶ˆæ¯
 	while(TRUE)
 	{
 		nSize = sizeof ( SOCKADDR_IN );
 
-		//ÓÉnbSize¼ÇÂ¼½ÓÊÕµ½µÄÊı×é´óĞ¡
+		//ç”±nbSizeè®°å½•æ¥æ”¶åˆ°çš„æ•°ç»„å¤§å°
 		//recvfrom(
 		//  _In_ SOCKET s,
 		//  _Out_writes_bytes_to_(len, return) __out_data_source(NETWORK) char FAR * buf,
@@ -67,34 +67,34 @@ DWORD WINAPI client_broadcastthread(LPVOID)
 		}
 		cRecvBuff[nbSize] = '\0';
 		TestMessageprint("%s",cRecvBuff);
-		if(nbSize>2)//ÒòÎª·şÎñÆ÷¹ã²¥µÄĞÅÏ¢´óÓÚ2 ¡°Message X¡±
-			//´òÓ¡³ö·¢¹ã²¥·şÎñÆ÷µÄµØÖ·ºÍ¶Ë¿Ú
+		if(nbSize>2)//å› ä¸ºæœåŠ¡å™¨å¹¿æ’­çš„ä¿¡æ¯å¤§äº2 â€œMessage Xâ€
+			//æ‰“å°å‡ºå‘å¹¿æ’­æœåŠ¡å™¨çš„åœ°å€å’Œç«¯å£
 		{ 
 			printf("Find A Server!\n");
 			TestMessageprint("Server IP_and_PORT:%s:%d", inet_ntoa(Client_Broadcast_Geted_Serveraddr.sin_addr), ntohs(Client_Broadcast_Geted_Serveraddr.sin_port));
 
-			//¿ªÆôclient·¢ËÍÏß³Ì
+			//å¼€å¯clientå‘é€çº¿ç¨‹
 			//////////////////////////////////////////////////////////////////////////////////
 			HANDLE client_sender_handle=CreateThread(NULL,0,client_senderthread,0,0,0);
 			CloseHandle(client_sender_handle);
 
 			///////////////////////////////////////////////////////////////////////////////////
 			break;
-			//ÍË³öclient½ÓÊÕ¹ã²¥µÄÏß³Ì
+			//é€€å‡ºclientæ¥æ”¶å¹¿æ’­çš„çº¿ç¨‹
 		}
 	}
 
-	// ÊÍ·ÅÁ¬½ÓºÍ½øĞĞ½áÊø¹¤×÷
+	// é‡Šæ”¾è¿æ¥å’Œè¿›è¡Œç»“æŸå·¥ä½œ
 	closesocket(c_broadcastsocket);
 	WSACleanup();
 	return 0;
 }
 /*******************************************************************************
-* º¯ÊıÃû        : DWORD WINAPI client_senderthread(LPVOID)
-* º¯ÊıÃèÊö    	: ¿Í»§¶Ë·¢ËÍÏûÏ¢¸ø·şÎñÆ÷
-* ÊäÈë²ÎÊı      : ÎŞ
-* Êä³ö½á¹û     	: SOCKADDR_IN Client_Broadcast_Geted_Serveraddr
-* ·µ»ØÖµ        : ÎŞ
+* å‡½æ•°å        : DWORD WINAPI client_senderthread(LPVOID)
+* å‡½æ•°æè¿°    	: å®¢æˆ·ç«¯å‘é€æ¶ˆæ¯ç»™æœåŠ¡å™¨
+* è¾“å…¥å‚æ•°      : æ— 
+* è¾“å‡ºç»“æœ     	: SOCKADDR_IN Client_Broadcast_Geted_Serveraddr
+* è¿”å›å€¼        : æ— 
 *******************************************************************************/
 
 SOCKET ClientSocket;
@@ -107,22 +107,22 @@ DWORD WINAPI client_senderthread(LPVOID)
 
 	char      c_Message[MSGSIZE];
 
-	// ³õÊ¼»¯winsock¿â£¬Ê¹ÓÃsocketµÄÇ°Ìá
+	// åˆå§‹åŒ–winsockåº“ï¼Œä½¿ç”¨socketçš„å‰æ
 	if ( WSAStartup( MAKEWORD(2,2), &c_listerwsaData ) != NO_ERROR )
 		ErrorMessageprint("Error at WSAStartup()");
 
 
 	ClientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);    
 
-	memset(&serveraddr, 0, sizeof(SOCKADDR_IN));               //ÏÈ½«±£´æµØÖ·µÄserverÖÃÎªÈ«0
-	serveraddr.sin_family = PF_INET;                           //ÉùÃ÷µØÖ·¸ñÊ½ÊÇTCP/IPµØÖ·¸ñÊ½
-	serveraddr.sin_port = htons(CONTROLPORT);                         //Ö¸Ã÷Á¬½Ó·şÎñÆ÷µÄ¶Ë¿ÚºÅ
-	//printf("Accepte server:%s:%d\n", inet_ntoa(saClient.sin_addr), ntohs(saClient.sin_port));//¼ì²âÓÃ¾ä
-	serveraddr.sin_addr= Client_Broadcast_Geted_Serveraddr.sin_addr;    //Ö¸Ã÷Á¬½Ó·şÎñÆ÷µÄIPµØÖ·
-	if (SOCKET_ERROR==connect( ClientSocket, (struct sockaddr *)&serveraddr, sizeof(SOCKADDR_IN))) //Á¬µ½¸Õ²ÅÖ¸Ã÷µÄ·şÎñÆ÷ÉÏ
+	memset(&serveraddr, 0, sizeof(SOCKADDR_IN));               //å…ˆå°†ä¿å­˜åœ°å€çš„serverç½®ä¸ºå…¨0
+	serveraddr.sin_family = PF_INET;                           //å£°æ˜åœ°å€æ ¼å¼æ˜¯TCP/IPåœ°å€æ ¼å¼
+	serveraddr.sin_port = htons(CONTROLPORT);                         //æŒ‡æ˜è¿æ¥æœåŠ¡å™¨çš„ç«¯å£å·
+	//printf("Accepte server:%s:%d\n", inet_ntoa(saClient.sin_addr), ntohs(saClient.sin_port));//æ£€æµ‹ç”¨å¥
+	serveraddr.sin_addr= Client_Broadcast_Geted_Serveraddr.sin_addr;    //æŒ‡æ˜è¿æ¥æœåŠ¡å™¨çš„IPåœ°å€
+	if (SOCKET_ERROR==connect( ClientSocket, (struct sockaddr *)&serveraddr, sizeof(SOCKADDR_IN))) //è¿åˆ°åˆšæ‰æŒ‡æ˜çš„æœåŠ¡å™¨ä¸Š
 	{
-		ErrorMessageprint("Can't connect Server.");//³õÊ¼»¯Ê§°Ü·µ»Ø-1
-		//¿ÉÄÜserver¶ËµÄ¿Í»§ÒÑµ½×î´óÖµ
+		ErrorMessageprint("Can't connect Server.");//åˆå§‹åŒ–å¤±è´¥è¿”å›-1
+		//å¯èƒ½serverç«¯çš„å®¢æˆ·å·²åˆ°æœ€å¤§å€¼
 	}
 	TestMessageprint("connect server success");
 
@@ -142,11 +142,11 @@ DWORD WINAPI client_senderthread(LPVOID)
 			ErrorMessageprint("send() failed");
 
 		// printf("[SendMessage_OK]\n");
-		// if(!strcmp(c_Message,"exit"))//client×ÔÉíÍË³ö
+		// if(!strcmp(c_Message,"exit"))//clientè‡ªèº«é€€å‡º
 		//  exit(1);
 	}
 
-	// ÊÍ·ÅÁ¬½ÓºÍ½øĞĞ½áÊø¹¤×÷
+	// é‡Šæ”¾è¿æ¥å’Œè¿›è¡Œç»“æŸå·¥ä½œ
 	closesocket( ClientSocket);
 	WSACleanup();
 	getchar();
@@ -154,11 +154,11 @@ DWORD WINAPI client_senderthread(LPVOID)
 }
 
 /*******************************************************************************
-* º¯ÊıÃû        : DWORD WINAPI client_listerthread(LPVOID)
-* º¯ÊıÃèÊö    	: ĞèÒªÓĞClientSocket
-* ÊäÈë²ÎÊı      : ÎŞ
-* Êä³ö½á¹û     	: 
-* ·µ»ØÖµ        : ÎŞ
+* å‡½æ•°å        : DWORD WINAPI client_listerthread(LPVOID)
+* å‡½æ•°æè¿°    	: éœ€è¦æœ‰ClientSocket
+* è¾“å…¥å‚æ•°      : æ— 
+* è¾“å‡ºç»“æœ     	: 
+* è¿”å›å€¼        : æ— 
 *******************************************************************************/
 DWORD WINAPI client_listerthread(LPVOID)
 {
@@ -189,11 +189,11 @@ DWORD WINAPI client_listerthread(LPVOID)
 	WSACleanup();
 }
 /*******************************************************************************
-* º¯ÊıÃû        : lclient()
-* º¯ÊıÃèÊö    	: ¿Í»§¶ËÉú³É
-* ÊäÈë²ÎÊı      : ÎŞ
-* Êä³ö½á¹û     	: ÎŞ
-* ·µ»ØÖµ        : ÎŞ
+* å‡½æ•°å        : lclient()
+* å‡½æ•°æè¿°    	: å®¢æˆ·ç«¯ç”Ÿæˆ
+* è¾“å…¥å‚æ•°      : æ— 
+* è¾“å‡ºç»“æœ     	: æ— 
+* è¿”å›å€¼        : æ— 
 *******************************************************************************/
 int lclient(){
 	HANDLE client_broadcast_handle=CreateThread(NULL,0,client_broadcastthread,0,0,0);
@@ -205,42 +205,44 @@ int lclient(){
 	CloseHandle(client_lister_handle);*/
 	////////////////////////////////////////////////////////////////////
 	while(1)
-	{}
+	{
+		Sleep(5000);
+	}
 	getchar();
 	return 0;
 }
-//½âÎö¿ØÖÆÃüÁî
+//è§£ææ§åˆ¶å‘½ä»¤
 void jiexi(char Message[MSGSIZE])
 {
 	char outmessage[1024];
-	     //²¥·ÅÃüÁî
+	     //æ’­æ”¾å‘½ä»¤
 	      // Mp3ChooseFun3("temp.mp3",Message[0],outmessage,atoi(Message+1));
 		   Mp3ChooseFun3("temp.mp3",Message[0],outmessage,atoi(Message+1));
 		   if(outmessage!=NULL)
 		if(SOCKET_ERROR==send( ClientSocket, outmessage, strlen(outmessage), 0))
 			ErrorMessageprint("send() failed");
-		    memset(outmessage, 0, strlen(outmessage) );//Çå¿ÕÊı¾İ
-		if(Message[0]=='@')//´«Êä
+		    memset(outmessage, 0, strlen(outmessage) );//æ¸…ç©ºæ•°æ®
+		if(Message[0]=='@')//ä¼ è¾“
 	{
 		        // Mp3Close();
 				 if(NowReceiveRun())
-				{HANDLE hThread=CreateThread(NULL,0,mp3receiver,0,0,0);//´´½¨½ÓÊÕÏß³Ì
+				{HANDLE hThread=CreateThread(NULL,0,mp3receiver,0,0,0);//åˆ›å»ºæ¥æ”¶çº¿ç¨‹
 				 CloseHandle(hThread);}	
 		
 	}
-		if(Message[0]=='x')//´«Êäimpottant
+		if(Message[0]=='x')//ä¼ è¾“impottant
 	{
 				 Mp3Close();
 	}
 }
-// #q==¼ÓÔØmp3
-// @pxxxx==½ÓÊÕmp3ºÍ¶Ë¿Ú
+// #q==åŠ è½½mp3
+// @pxxxx==æ¥æ”¶mp3å’Œç«¯å£
 //
 
-// #q==¼ÓÔØmp3
-// @pxxxx==½ÓÊÕmp3ºÍ¶Ë¿Ú
+// #q==åŠ è½½mp3
+// @pxxxx==æ¥æ”¶mp3å’Œç«¯å£
 //
-DWORD WINAPI mp3receiver(LPVOID)//·¢ËÍÎÄ¼şÏß³Ì
+DWORD WINAPI mp3receiver(LPVOID)//å‘é€æ–‡ä»¶çº¿ç¨‹
 {
 	travalreceiver("temp.mp3");
 	return 0;
